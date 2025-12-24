@@ -1,35 +1,65 @@
-import { useEffect, useState } from "react";
-import api from "../config_axios.js";
+// import { useEffect, useReducer } from "react";
+// import api from "./services/config_axios.js";
+
+/**
+ * @author VAMPETA
+ * @brief REQUISICAO QUE BUSCA A LISTA DE CHATS
+ * @param setContacts HOOK QUE SALVA OS ESTADOS DO COMPONENTE
+*/
+// async function requestContacts(setContacts) {
+// 	const res = await api({
+// 		method: "GET",
+// 		url: "/contacts"
+// 	});
+
+// 	if (res.status !== 200) return (setContacts({ load: false, error: true }));
+// 	if (res.status === 200) return (setContacts({ contacts: res.data, load: false }));
+// }
+
+/**
+ * @author VAMPETA
+ * @brief TELA DE LOAD DOS CONTATOS
+*/
+function Load() {
+	return (
+		<div className="flex items-center justify-center w-[30%] bg-gray-800">
+			<h1 className="text-white">LOAD</h1>
+		</div>
+	);
+}
+
+/**
+ * @author VAMPETA
+ * @brief TELA DE ERRO DOS CONTATOS
+*/
+function Error() {
+	return (
+		<div className="flex items-center justify-center w-[30%] bg-gray-800">
+			<h1 className="text-white">ERROR</h1>
+		</div>
+	);
+}
 
 /**
  * @author VAMPETA
  * @brief COMPONENTE DE CONTATOS
+ * @param contacts CONTATOS DOS USUARIOS
 */
-export default function Contacts() {
-	// const contacts = ["a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c"];
+export default function Contacts({ contacts }) {
+	// const [contacts, setContacts] = useReducer((contacts, value) => ({ ...contacts, ...value }), { contacts: [], load: true, error: false });
 
+	// useEffect(() => { requestContacts(setContacts) }, []);
 
-	const [contacts, setContacts] = useState([]);
-
-	useEffect(() => {
-		async function request() {		// BLOQUEI DE CORS
-			const res = await api({
-				method: "GET",
-				url: "/contacts"
-			});
-			console.log(res)
-		}
-		request();
-	}, []);
+	if (contacts.load) return (<Load/>);
+	if (contacts.error) return (<Error/>);
 	return (
 		<ul className="w-[30%] bg-gray-800 h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
-			{contacts.map((message, i) => (
-				<li key={i} className="flex items-center p-3 gap-3 w-[90%] h-[10vh] mx-auto my-4 bg-gray-200">
-					{/* {message} */}
-					<img className="w-12 h-12 rounded-full object-cover" alt="Foto de perfil" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT548e7yKxVzd9AoGwcjuciTV94wTtuZPzyC_-kWy3r&s" />
+			{contacts.contacts.map((contact, i) => (
+				<li key={i} className="flex items-center p-3 gap-3 w-[90%] h-[10vh] mx-auto my-4 bg-gray-200 cursor-pointer" onClick={() => alert("teste: " + i)}>
+					<img className="w-12 h-12 rounded-full object-cover" alt="Foto de perfil" src={contact.photo} />
 					<div>
-						<h1 className="text-[clamp(0.875rem,1.5vw,1.125rem)]">numero</h1>
-						<p className="text-[clamp(0.875rem,1.2vw,1rem)]">ultima mensagem...</p>
+						<h1 className="text-[clamp(0.875rem,1.5vw,1.125rem)]">{contact.phone}</h1>
+						<p className="text-[clamp(0.875rem,1.2vw,1rem)]">{contact.lastMessage}</p>
 					</div>
 				</li>
 			))}
