@@ -52,6 +52,7 @@ export default function Contacts({ contacts }) {
 
 	if (contacts.load) return (<Load/>);
 	if (contacts.error) return (<Error/>);
+	const icon = { "sent": "check", "delivered": "check-all", "read": "check-all text-blue-500", "failed": "x-circle" };
 	return (
 		<ul className="w-[30%] bg-gray-800 h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
 			{contacts.contacts.map((contact, i) => (
@@ -59,10 +60,18 @@ export default function Contacts({ contacts }) {
 					<img className="w-12 h-12 rounded-full object-cover" alt="Foto de perfil" src={contact.photo} />
 					<div>
 						<h1 className="text-[clamp(0.875rem,1.5vw,1.125rem)]">{contact.phone}</h1>
-						<p className="text-[clamp(0.875rem,1.2vw,1rem)]">{contact.lastMessage}</p>
+						<p className="text-[clamp(0.875rem,1.2vw,1rem)]">
+							<i className={`bi bi-${icon[contact.lastMessage.status]} ${(contact.lastMessage.status === "read") ? "text-blue-500" : "text-gray-500"} text-sm`}/>
+							{contact.lastMessage.text}
+						</p>
 					</div>
 				</li>
 			))}
 		</ul>
 	);
 }
+
+// "sent" 			check
+// "delivered"		check-all
+// "read"			check-all (blue)
+// "failed"			x-circle

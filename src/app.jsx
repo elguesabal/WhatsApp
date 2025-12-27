@@ -13,14 +13,15 @@ import Chat from "./chat.jsx"
 function connectSocket(setContacts) {
 	socket.connect();
 	socket.emit("contacts", null, (res) => {
+console.log("recebeu dados:", res);
 		if (res.ok) setContacts({ contacts: res.data, load: false });
 		if (!res.ok) setContacts({ load: false, error: true });
 	});
-	socket.on("teste", (res) => {
-		console.log("enviou dados:", res.message);
-	});
+socket.on("teste", (res) => {
+	console.log("enviou dados:", res.message);
+});
 	return (() => {
-		socket.off("teste");
+socket.off("teste");
 		socket.disconnect();
 	});
 }
