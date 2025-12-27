@@ -1,9 +1,11 @@
+import { theme } from "./style/theme.js";
+
 /**
  * @author VAMPETA
  * @brief ABA DE CHAT
 */
 export default function Chat() {
 	return (
-		<div className="w-[70%] bg-gray-900"></div>
+		<div className={`${theme.color1} w-[70%]`}></div>
 	);
 }

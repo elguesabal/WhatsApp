@@ -1,28 +1,22 @@
-import { useEffect, useReducer } from "react";
-import socket from "./services/config_socketio.js";
+import { useEffect } from "react";
+import { useSocket } from "./services/useSocket.js";
 
-import Contacts from "./contacts.jsx"
+import Contacts from "./contacts/contacts.jsx"
 import Chat from "./chat.jsx"
 
 /**
  * @author VAMPETA
  * @brief CONECTA AO SOCKET E SALVA DADOS
- * @param contacts CONTATOS DOS USUARIOS
- * @param setContacts HOOK QUE SALVA OS ESTADOS DO COMPONENTE
+ * @param socket CONEXAO SOCKET
 */
-function connectSocket(setContacts) {
-	socket.connect();
-	socket.emit("contacts", null, (res) => {
-console.log("recebeu dados:", res);
-		if (res.ok) setContacts({ contacts: res.data, load: false });
-		if (!res.ok) setContacts({ load: false, error: true });
-	});
-socket.on("teste", (res) => {
+function connectSocket(socket) {		// EVENTO DE TESTE, REMOVER DEPOIS
+const teste = (res) => {
 	console.log("enviou dados:", res.message);
-});
+}
+socket.on("teste", teste);
+
 	return (() => {
-socket.off("teste");
-		socket.disconnect();
+socket.off("teste", teste);
 	});
 }
 
@@ -31,12 +25,21 @@ socket.off("teste");
  * @brief TELA PRINCIPAL
 */
 export default function App() {
-	const [contacts, setContacts] = useReducer((contacts, value) => ({ ...contacts, ...value }), { contacts: [], load: true, error: false });
+	const socket = useSocket();
 
-	useEffect(() => (connectSocket(setContacts)), []);
+	useEffect(() => {
+		socket.connect();
+		const clear = connectSocket(socket);
+
+		return (() => {
+			clear();
+			socket.disconnect();
+		});
+	}, [socket]);
+
 	return (
 		<div className="flex h-screen">
-			<Contacts contacts={contacts} />
+			<Contacts />
 			<Chat />
 		</div>
 	);
