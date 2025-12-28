@@ -6,8 +6,8 @@
 */
 export function requestContacts(socket, setContacts) {
 	socket.emit("contacts", null, (res) => {
-		if (res.ok) setContacts({ contacts: res.data, load: false });
-		if (!res.ok) setContacts({ load: false, error: true });
+		if (res.ok) setContacts({ type: "SET_CONTACTS", contacts: res.data });
+		if (!res.ok) setContacts({ type: "ERROR" });
 	});
 }
 
@@ -15,9 +15,24 @@ export function requestContacts(socket, setContacts) {
  * @author VAMPETA
  * @brief FUNCAO DE CLIQUE NO CHAT
  * @param socket CONEXAO SOCKET
- * @param phone NUMERO DO CONTATO CLICADO
+ * @param setContacts HOOK QUE SALVA OS ESTADOS DO COMPONENTE
 */
-export function clickChat(socket, phone) {
+export function listenOpenChat(socket, setContacts) {
+	function new_message(payload, callback) {
+		setContacts({ type: "NEW_MESSAGE", update: payload });
+	}
+	socket.on("new_message", new_message);
+	return (() => socket.off("new_message", new_message));
+}
+
+/**
+ * @author VAMPETA
+ * @brief FUNCAO DE CLIQUE NO CHAT
+ * @param socket CONEXAO SOCKET
+ * @param phone NUMERO DO CONTATO CLICADO
+ * @param setContacts HOOK QUE SALVA OS ESTADOS DO COMPONENTE
+*/
+export function clickChat(socket, phone, setContacts) {
 	socket.emit("open_chat", { phone });
-	alert("chat aberto");
+	setContacts({ type: "OPEN_CHAT", phone: phone, humanViewed: true });
 }

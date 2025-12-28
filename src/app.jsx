@@ -6,22 +6,6 @@ import Chat from "./chat.jsx"
 
 /**
  * @author VAMPETA
- * @brief CONECTA AO SOCKET E SALVA DADOS
- * @param socket CONEXAO SOCKET
-*/
-function connectSocket(socket) {		// EVENTO DE TESTE, REMOVER DEPOIS
-const teste = (res) => {
-	console.log("enviou dados:", res.message);
-}
-socket.on("teste", teste);
-
-	return (() => {
-socket.off("teste", teste);
-	});
-}
-
-/**
- * @author VAMPETA
  * @brief TELA PRINCIPAL
 */
 export default function App() {
@@ -29,12 +13,7 @@ export default function App() {
 
 	useEffect(() => {
 		socket.connect();
-		const clear = connectSocket(socket);
-
-		return (() => {
-			clear();
-			socket.disconnect();
-		});
+		return (() => socket.disconnect());
 	}, [socket]);
 
 	return (
