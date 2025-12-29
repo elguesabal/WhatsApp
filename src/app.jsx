@@ -13,6 +13,7 @@ export default function App() {
 
 	useEffect(() => {
 		socket.connect();
+		socket.on("connect_error", (error) => console.log("Erro ao conectar:", error.message));
 		return (() => socket.disconnect());
 	}, [socket]);
 
